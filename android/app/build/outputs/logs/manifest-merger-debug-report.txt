@@ -86,30 +86,30 @@ MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] C:\Users\Mr
 		ADDED from I:\Cyberoi\Training\Flutter\myapp\android\app\src\main\AndroidManifest.xml:10:9-30
 	android:icon
 		ADDED from I:\Cyberoi\Training\Flutter\myapp\android\app\src\main\AndroidManifest.xml:11:9-43
-service#io.flutter.plugins.androidalarmmanager.AlarmService
+service#dev.fluttercommunity.plus.androidalarmmanager.AlarmService
 ADDED from I:\Cyberoi\Training\Flutter\myapp\android\app\src\main\AndroidManifest.xml:13:13-16:43
 	android:exported
 		ADDED from I:\Cyberoi\Training\Flutter\myapp\android\app\src\main\AndroidManifest.xml:16:17-41
 	android:permission
 		ADDED from I:\Cyberoi\Training\Flutter\myapp\android\app\src\main\AndroidManifest.xml:15:17-73
 	android:name
-		ADDED from I:\Cyberoi\Training\Flutter\myapp\android\app\src\main\AndroidManifest.xml:14:17-83
-receiver#io.flutter.plugins.androidalarmmanager.AlarmBroadcastReceiver
+		ADDED from I:\Cyberoi\Training\Flutter\myapp\android\app\src\main\AndroidManifest.xml:14:17-90
+receiver#dev.fluttercommunity.plus.androidalarmmanager.AlarmBroadcastReceiver
 ADDED from I:\Cyberoi\Training\Flutter\myapp\android\app\src\main\AndroidManifest.xml:17:13-19:43
 	android:exported
 		ADDED from I:\Cyberoi\Training\Flutter\myapp\android\app\src\main\AndroidManifest.xml:19:17-41
 	android:name
-		ADDED from I:\Cyberoi\Training\Flutter\myapp\android\app\src\main\AndroidManifest.xml:18:17-93
-receiver#io.flutter.plugins.androidalarmmanager.RebootBroadcastReceiver
+		ADDED from I:\Cyberoi\Training\Flutter\myapp\android\app\src\main\AndroidManifest.xml:18:17-100
+receiver#dev.fluttercommunity.plus.androidalarmmanager.RebootBroadcastReceiver
 ADDED from I:\Cyberoi\Training\Flutter\myapp\android\app\src\main\AndroidManifest.xml:20:13-26:24
 	android:enabled
 		ADDED from I:\Cyberoi\Training\Flutter\myapp\android\app\src\main\AndroidManifest.xml:22:17-40
 	android:name
-		ADDED from I:\Cyberoi\Training\Flutter\myapp\android\app\src\main\AndroidManifest.xml:21:17-94
+		ADDED from I:\Cyberoi\Training\Flutter\myapp\android\app\src\main\AndroidManifest.xml:21:17-101
 intent-filter#action:name:android.intent.action.BOOT_COMPLETED
 ADDED from I:\Cyberoi\Training\Flutter\myapp\android\app\src\main\AndroidManifest.xml:23:17-25:33
 action#android.intent.action.BOOT_COMPLETED
-ADDED from I:\Cyberoi\Training\Flutter\myapp\android\app\src\main\AndroidManifest.xml:24:21-82
+ADDED from I:\Cyberoi\Training\Flutter\myapp\android\app\src\main\AndroidManifest.xml:24:21-90
 	android:name
 		ADDED from I:\Cyberoi\Training\Flutter\myapp\android\app\src\main\AndroidManifest.xml:24:29-80
 activity#com.example.myapp.MainActivity
