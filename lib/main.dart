@@ -1,6 +1,8 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'Calender/calender.dart';
-import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
+// import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 
 // Screens
 import 'Screens/mainDrawer.dart';
@@ -8,14 +10,9 @@ import 'Screens/mainDrawer.dart';
 void main() async {
   CalenderState c1 = new CalenderState();
   runApp(MyApp());
-  await AndroidAlarmManager.initialize();
   // Timer.periodic(
   //     Duration(seconds: 10), (timer) => c1.showNotification(DateTime.now()));
-  AndroidAlarmManager.periodic(const Duration(seconds: 10), 0, printsomething);
-}
-
-printsomething() {
-  print("called");
+  // AndroidAlarmManager.periodic(const Duration(seconds: 10), 0, printsomething);
 }
 
 class MyApp extends StatelessWidget {

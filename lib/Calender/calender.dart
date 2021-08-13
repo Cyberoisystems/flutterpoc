@@ -1,3 +1,7 @@
+import 'dart:isolate';
+import 'dart:math';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -10,6 +14,10 @@ import './Models/Events.dart';
 class Calender extends StatefulWidget {
   @override
   CalenderState createState() => CalenderState();
+}
+
+printSomething() {
+  print("called");
 }
 
 class CalenderState extends State<Calender> with TickerProviderStateMixin {
@@ -74,15 +82,13 @@ class CalenderState extends State<Calender> with TickerProviderStateMixin {
       alarmIndicator: true,
       remainderTime: remainder,
     );
+
     await AndroidAlarmManager.oneShot(
-        const Duration(seconds: 5), 0, printsomething);
+        const Duration(seconds: 5), 0, printSomething,
+        exact: true, wakeup: true);
     setState(() {
       eventList.add(event);
     });
-  }
-
-  static Future<void> printSomething() async {
-    print("called");
   }
 
   showNotification() async {
