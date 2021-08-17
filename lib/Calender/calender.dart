@@ -1,8 +1,15 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:ui';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
-import 'package:myapp/main.dart';
+import 'package:localstorage/localstorage.dart';
+import './Models/eventList.dart';
+
 //Screens
 import './Screens/Date.dart';
 import './Models/Events.dart';
@@ -12,30 +19,72 @@ class Calender extends StatefulWidget {
   CalenderState createState() => CalenderState();
 }
 
-class CalenderState extends State<Calender> with TickerProviderStateMixin {
+printSomething() {
+  print(DateTime.now());
+}
+
+showNotification() async {
+  EventList c1 = new EventList();
+  CalenderState c2 = new CalenderState();
   late FlutterLocalNotificationsPlugin localNotification;
-  late TabController tb;
-
-  List<EventsList> eventList = [
-    EventsList(
-      id: 1,
-      title: "sam's birthday",
-      date: DateTime.now(),
-      eventType: "birthday",
-      alarmIndicator: true,
-      remainderTime: DateTime.now(),
-    )
-  ];
-
-  void alarmHandler(id) {
-    eventList.forEach((item) {
-      if (item.id == id) {
-        setState(() {
-          item.alarmIndicator = !item.alarmIndicator;
-        });
-      }
-    });
+  var androidInitialize = new AndroidInitializationSettings('ic_launcher');
+  var iosInitialze = new IOSInitializationSettings();
+  var initalizationSetting = new InitializationSettings(
+    android: androidInitialize,
+    iOS: iosInitialze,
+  );
+  localNotification = new FlutterLocalNotificationsPlugin();
+  localNotification.initialize(initalizationSetting);
+  List item = c2.storage.getItem('events');
+  if (item == null) {
+    return;
   }
+  print("item1 : $item ");
+  late List item2;
+  if (item != null) {
+    print("called inside");
+    item2 = await List<EventsList>.from(
+      (item as List).map(
+        (data) => EventsList(
+          title: data['title'],
+          date: DateTime.parse(data['date']),
+          id: int.parse(data['id']),
+          eventType: data['eventType'],
+          remainderTime: DateTime.parse(data['remainderTime']),
+        ),
+      ),
+    );
+  }
+  print(item2.runtimeType);
+  // item2.forEach((items) => print(items.title));
+  print("original EventList : ${c1.list.runtimeType}");
+  var d = new DateTime.now();
+  DateTime date = new DateTime(d.year, d.month, d.day, d.hour, d.minute);
+  var events =
+      item2.where((event) => event.remainderTime.compareTo(date) == 0).toList();
+  print("event detail ${events.length}${c1.list.length}");
+  if (events.length != 0) {
+    print("called inside");
+    var androidDetails = new AndroidNotificationDetails(
+        "channelId", "local Notification ", "channelDescription",
+        importance: Importance.high);
+    var iosDetails = new IOSNotificationDetails();
+    var generalDetails =
+        new NotificationDetails(android: androidDetails, iOS: iosDetails);
+    await localNotification.show(
+        0, events[0].title, events[0].eventType, generalDetails);
+  }
+  item2 = List.empty();
+  item = List.empty();
+  events = List.empty();
+}
+
+class CalenderState extends State<Calender> with TickerProviderStateMixin {
+  EventList listOfEvents = new EventList();
+  final LocalStorage storage = new LocalStorage('calender-app');
+  late List itemListDynamic;
+  late List<EventsList> ListItem;
+  late TabController tb;
 
   @override
   void initState() {
@@ -44,15 +93,41 @@ class CalenderState extends State<Calender> with TickerProviderStateMixin {
       vsync: this,
     );
     super.initState();
-    var androidInitialize = new AndroidInitializationSettings('ic_launcher');
-    var iosInitialze = new IOSInitializationSettings();
-    var initalizationSetting = new InitializationSettings(
-      android: androidInitialize,
-      iOS: iosInitialze,
+    itemListDynamic = storage.getItem('events');
+    ListItem = List<EventsList>.from(
+      (itemListDynamic as List).map(
+        (data) => EventsList(
+          title: data['title'],
+          date: DateTime.parse(data['date']),
+          id: int.parse(data['id']),
+          eventType: data['eventType'],
+          remainderTime: DateTime.parse(data['remainderTime']),
+        ),
+      ),
     );
-    localNotification = new FlutterLocalNotificationsPlugin();
-    localNotification.initialize(initalizationSetting);
-    AndroidAlarmManager.initialize();
+    if (ListItem != null) {
+      if (listOfEvents.list.length != 1) {
+        setState(() {
+          listOfEvents.list.replaceRange(0, 0, ListItem);
+        });
+      }
+    }
+
+    saveToStorage();
+  }
+
+  saveToStorage() {
+    print("events length ${listOfEvents.list.length}");
+    storage.setItem('events', listOfEvents.toJSONEncodable());
+    var item = storage.getItem('events');
+    print("localStorage Events length ${item.length} ");
+  }
+
+  deleteEvent(id) {
+    setState(() {
+      listOfEvents.list.removeWhere((event) => event.id.compareTo(id) == 0);
+    });
+    saveToStorage();
   }
 
   eventHandler(
@@ -65,44 +140,17 @@ class CalenderState extends State<Calender> with TickerProviderStateMixin {
     if (title == "" || eventtype == "") {
       return ScaffoldMessenger.of(context).showSnackBar(snackbar);
     }
-    // print(remainder);
     var event = EventsList(
-      id: eventList[eventList.length - 1].id + 1,
+      id: listOfEvents.list[listOfEvents.list.length - 1].id + 1,
       title: title,
       date: d,
       eventType: eventtype,
-      alarmIndicator: true,
       remainderTime: remainder,
     );
-    await AndroidAlarmManager.oneShot(
-        const Duration(seconds: 5), 0, printsomething);
     setState(() {
-      eventList.add(event);
+      listOfEvents.list.add(event);
     });
-  }
-
-  static Future<void> printSomething() async {
-    print("called");
-  }
-
-  showNotification() async {
-    // print(d);
-    // var events = eventList
-    //     .where((event) => event.remainderTime.compareTo(d) == 0)
-    //     .toList();
-    // print("event detail ${events.length}");
-    // if (events.length != 0) {
-    print("called inside");
-    var androidDetails = new AndroidNotificationDetails(
-        "channelId", "local Notification ", "channelDescription",
-        importance: Importance.high);
-    var iosDetails = new IOSNotificationDetails();
-    var generalDetails =
-        new NotificationDetails(android: androidDetails, iOS: iosDetails);
-    await localNotification.show(0, "title", "name", generalDetails);
-    // await localNotification.schedule(
-    //     0, events[0].title, events[0].eventType, d, generalDetails);
-    // }
+    saveToStorage();
   }
 
   @override
@@ -156,56 +204,46 @@ class CalenderState extends State<Calender> with TickerProviderStateMixin {
                       horizontal: 5,
                     ),
                     child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: Colors.purple,
-                        radius: 20,
-                        child: Text(
-                          DateFormat.d().format(
-                            eventList[index].date,
-                          ),
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20),
-                        ),
-                      ),
-                      title: Text(
-                        eventList[index].title,
-                        // DateFormat.Hms().format(eventList[index].remainderTime),
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      subtitle: Text(
-                        eventList[index].eventType,
-                        style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey),
-                      ),
-                      trailing: eventList[index].alarmIndicator
-                          ? IconButton(
-                              icon: Icon(
-                                Icons.alarm,
-                                color: Colors.purpleAccent,
-                                size: 30,
-                              ),
-                              onPressed: () =>
-                                  alarmHandler(eventList[index].id),
-                            )
-                          : IconButton(
-                              icon: Icon(
-                                Icons.alarm,
-                                size: 30,
-                              ),
-                              onPressed: () =>
-                                  alarmHandler(eventList[index].id),
+                        leading: CircleAvatar(
+                          backgroundColor: Colors.purple,
+                          radius: 20,
+                          child: Text(
+                            DateFormat.d().format(
+                              listOfEvents.list[index].date,
                             ),
-                    ),
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20),
+                          ),
+                        ),
+                        title: Text(
+                          listOfEvents.list[index].title,
+                          // DateFormat.Hms().format(listOfEvents.list[index].remainderTime),
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        subtitle: Text(
+                          listOfEvents.list[index].eventType,
+                          style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey),
+                        ),
+                        trailing: IconButton(
+                          icon: Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                            size: 30,
+                          ),
+                          onPressed: () =>
+                              deleteEvent(listOfEvents.list[index].id),
+                        )),
                   );
                 },
-                itemCount: eventList.length,
+                itemCount: listOfEvents.list.length,
               ),
             ),
           ),

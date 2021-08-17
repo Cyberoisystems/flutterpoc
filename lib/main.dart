@@ -1,21 +1,28 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'Calender/calender.dart';
-import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
+import 'package:myapp/Calender/calender.dart';
+// import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 
 // Screens
 import 'Screens/mainDrawer.dart';
 
 void main() async {
-  CalenderState c1 = new CalenderState();
+  var difference = DateTime.now().minute;
   runApp(MyApp());
-  await AndroidAlarmManager.initialize();
-  // Timer.periodic(
-  //     Duration(seconds: 10), (timer) => c1.showNotification(DateTime.now()));
-  AndroidAlarmManager.periodic(const Duration(seconds: 10), 0, printsomething);
-}
-
-printsomething() {
-  print("called");
+  Timer.periodic(const Duration(minutes: 1), (timer) => showNotification());
+  // await AndroidAlarmManager.initialize();
+  // await AndroidAlarmManager.periodic(
+  //   const Duration(minutes: 1),
+  //   0,
+  //   showNotification,
+  //   exact: true,
+  //   rescheduleOnReboot: false,
+  //   wakeup: true,
+  //   // startAt: DateTime.now().add(
+  //   //   Duration(seconds: (60 - difference)),
+  //   // ),
+  // );
 }
 
 class MyApp extends StatelessWidget {
