@@ -1,30 +1,23 @@
-import 'dart:async';
-import 'dart:convert';
 import 'dart:ui';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
-import 'package:localstorage/localstorage.dart';
-import './Models/eventList.dart';
+import 'package:provider/provider.dart';
+import 'Helper/Helper_DB.dart';
 
 //Screens
 import './Screens/Date.dart';
 import './Models/Events.dart';
+import 'Provider/Events_provider.dart';
 
 class Calender extends StatefulWidget {
   @override
   CalenderState createState() => CalenderState();
 }
 
-printSomething() {
-  print(DateTime.now());
-}
-
 showNotification() async {
-  EventList c1 = new EventList();
+  print("called notification ${DateTime.now()}");
   CalenderState c2 = new CalenderState();
   late FlutterLocalNotificationsPlugin localNotification;
   var androidInitialize = new AndroidInitializationSettings('ic_launcher');
@@ -35,36 +28,24 @@ showNotification() async {
   );
   localNotification = new FlutterLocalNotificationsPlugin();
   localNotification.initialize(initalizationSetting);
-  List item = c2.storage.getItem('events');
-  if (item == null) {
-    return;
-  }
-  print("item1 : $item ");
-  late List item2;
-  if (item != null) {
-    print("called inside");
-    item2 = await List<EventsList>.from(
-      (item as List).map(
-        (data) => EventsList(
-          title: data['title'],
-          date: DateTime.parse(data['date']),
-          id: int.parse(data['id']),
-          eventType: data['eventType'],
-          remainderTime: DateTime.parse(data['remainderTime']),
-        ),
-      ),
-    );
-  }
-  print(item2.runtimeType);
-  // item2.forEach((items) => print(items.title));
-  print("original EventList : ${c1.list.runtimeType}");
+  var responce = await HelperDB.getData('eventsTable');
+  // print(responce);
+  var eventsList = responce
+      .map((data) => EventsList(
+            id: data['id'],
+            title: data['title'],
+            date: DateTime.parse(data['date']),
+            eventType: data['eventType'],
+            remainderTime: DateTime.parse(data['remainder']),
+          ))
+      .toList();
   var d = new DateTime.now();
   DateTime date = new DateTime(d.year, d.month, d.day, d.hour, d.minute);
-  var events =
-      item2.where((event) => event.remainderTime.compareTo(date) == 0).toList();
-  print("event detail ${events.length}${c1.list.length}");
+  var events = eventsList
+      .where((event) => event.remainderTime.compareTo(date) == 0)
+      .toList();
   if (events.length != 0) {
-    print("called inside");
+    // print("called inside");
     var androidDetails = new AndroidNotificationDetails(
         "channelId", "local Notification ", "channelDescription",
         importance: Importance.high);
@@ -74,17 +55,25 @@ showNotification() async {
     await localNotification.show(
         0, events[0].title, events[0].eventType, generalDetails);
   }
-  item2 = List.empty();
-  item = List.empty();
-  events = List.empty();
 }
 
 class CalenderState extends State<Calender> with TickerProviderStateMixin {
-  EventList listOfEvents = new EventList();
-  final LocalStorage storage = new LocalStorage('calender-app');
   late List itemListDynamic;
   late List<EventsList> ListItem;
   late TabController tb;
+  var isLoaded = false;
+
+  @override
+  void didChangeDependencies() {
+    if (!isLoaded) {
+      Provider.of<EventsProvider>(context, listen: false)
+          .fetchAndSetData("eventsTable");
+    }
+    setState(() {
+      isLoaded = true;
+    });
+    super.didChangeDependencies();
+  }
 
   @override
   void initState() {
@@ -93,41 +82,11 @@ class CalenderState extends State<Calender> with TickerProviderStateMixin {
       vsync: this,
     );
     super.initState();
-    itemListDynamic = storage.getItem('events');
-    ListItem = List<EventsList>.from(
-      (itemListDynamic as List).map(
-        (data) => EventsList(
-          title: data['title'],
-          date: DateTime.parse(data['date']),
-          id: int.parse(data['id']),
-          eventType: data['eventType'],
-          remainderTime: DateTime.parse(data['remainderTime']),
-        ),
-      ),
-    );
-    if (ListItem != null) {
-      if (listOfEvents.list.length != 1) {
-        setState(() {
-          listOfEvents.list.replaceRange(0, 0, ListItem);
-        });
-      }
-    }
-
-    saveToStorage();
   }
 
-  saveToStorage() {
-    print("events length ${listOfEvents.list.length}");
-    storage.setItem('events', listOfEvents.toJSONEncodable());
-    var item = storage.getItem('events');
-    print("localStorage Events length ${item.length} ");
-  }
-
-  deleteEvent(id) {
-    setState(() {
-      listOfEvents.list.removeWhere((event) => event.id.compareTo(id) == 0);
-    });
-    saveToStorage();
+  void deleteEvent(id) {
+    Provider.of<EventsProvider>(context, listen: false)
+        .removeEvents("eventsTable", id);
   }
 
   eventHandler(
@@ -136,25 +95,26 @@ class CalenderState extends State<Calender> with TickerProviderStateMixin {
     String eventtype,
     DateTime d,
     DateTime remainder,
-  ) async {
-    if (title == "" || eventtype == "") {
+  ) {
+    if (title == "" || eventtype == "" || remainder == null) {
       return ScaffoldMessenger.of(context).showSnackBar(snackbar);
     }
-    var event = EventsList(
-      id: listOfEvents.list[listOfEvents.list.length - 1].id + 1,
-      title: title,
-      date: d,
-      eventType: eventtype,
-      remainderTime: remainder,
-    );
-    setState(() {
-      listOfEvents.list.add(event);
-    });
-    saveToStorage();
+
+    List<EventsList> list = [
+      EventsList(
+          id: DateTime.now().toIso8601String(),
+          title: title,
+          date: d,
+          eventType: eventtype,
+          remainderTime: remainder),
+    ].toList();
+    Provider.of<EventsProvider>(context, listen: false).addEvents(list);
   }
 
   @override
   Widget build(BuildContext context) {
+    List<EventsList> listOfEvents =
+        Provider.of<EventsProvider>(context).getEvents;
     var mediaquery = MediaQuery.of(context);
     var appBar = AppBar(
       centerTitle: true,
@@ -209,7 +169,7 @@ class CalenderState extends State<Calender> with TickerProviderStateMixin {
                           radius: 20,
                           child: Text(
                             DateFormat.d().format(
-                              listOfEvents.list[index].date,
+                              listOfEvents[index].date,
                             ),
                             style: TextStyle(
                                 color: Colors.white,
@@ -218,15 +178,14 @@ class CalenderState extends State<Calender> with TickerProviderStateMixin {
                           ),
                         ),
                         title: Text(
-                          listOfEvents.list[index].title,
-                          // DateFormat.Hms().format(listOfEvents.list[index].remainderTime),
+                          listOfEvents[index].title,
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         subtitle: Text(
-                          listOfEvents.list[index].eventType,
+                          listOfEvents[index].eventType,
                           style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
@@ -238,12 +197,11 @@ class CalenderState extends State<Calender> with TickerProviderStateMixin {
                             color: Colors.red,
                             size: 30,
                           ),
-                          onPressed: () =>
-                              deleteEvent(listOfEvents.list[index].id),
+                          onPressed: () => deleteEvent(listOfEvents[index].id),
                         )),
                   );
                 },
-                itemCount: listOfEvents.list.length,
+                itemCount: listOfEvents.length,
               ),
             ),
           ),

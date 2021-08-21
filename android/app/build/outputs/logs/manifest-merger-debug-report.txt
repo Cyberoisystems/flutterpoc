@@ -8,7 +8,6 @@ MERGED from C:\Users\Mr. Dhiman\Desktop\flutterpoc\android\app\src\main\AndroidM
 MERGED from [:sqflite] C:\Users\Mr. Dhiman\Desktop\flutterpoc\build\sqflite\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
 MERGED from [:android_alarm_manager_plus] C:\Users\Mr. Dhiman\Desktop\flutterpoc\build\android_alarm_manager_plus\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
 MERGED from [:flutter_local_notifications] C:\Users\Mr. Dhiman\Desktop\flutterpoc\build\flutter_local_notifications\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-23:12
-MERGED from [:path_provider] C:\Users\Mr. Dhiman\Desktop\flutterpoc\build\path_provider\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.appcompat:appcompat:1.0.0] C:\Users\Mr. Dhiman\.gradle\caches\transforms-2\files-2.1\ddfeebee320e213e4569474cdfe875cf\appcompat-1.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.media:media:1.1.0] C:\Users\Mr. Dhiman\.gradle\caches\transforms-2\files-2.1\1ff4bcb3167a74d75651e794e1872ecc\media-1.1.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.fragment:fragment:1.1.0] C:\Users\Mr. Dhiman\.gradle\caches\transforms-2\files-2.1\2fd9120a6da4df3dbabdd40f6a2d8995\fragment-1.1.0\AndroidManifest.xml:17:1-24:12
@@ -160,8 +159,6 @@ MERGED from [:android_alarm_manager_plus] C:\Users\Mr. Dhiman\Desktop\flutterpoc
 MERGED from [:android_alarm_manager_plus] C:\Users\Mr. Dhiman\Desktop\flutterpoc\build\android_alarm_manager_plus\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:flutter_local_notifications] C:\Users\Mr. Dhiman\Desktop\flutterpoc\build\flutter_local_notifications\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:flutter_local_notifications] C:\Users\Mr. Dhiman\Desktop\flutterpoc\build\flutter_local_notifications\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
-MERGED from [:path_provider] C:\Users\Mr. Dhiman\Desktop\flutterpoc\build\path_provider\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
-MERGED from [:path_provider] C:\Users\Mr. Dhiman\Desktop\flutterpoc\build\path_provider\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [androidx.appcompat:appcompat:1.0.0] C:\Users\Mr. Dhiman\.gradle\caches\transforms-2\files-2.1\ddfeebee320e213e4569474cdfe875cf\appcompat-1.0.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.appcompat:appcompat:1.0.0] C:\Users\Mr. Dhiman\.gradle\caches\transforms-2\files-2.1\ddfeebee320e213e4569474cdfe875cf\appcompat-1.0.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.media:media:1.1.0] C:\Users\Mr. Dhiman\.gradle\caches\transforms-2\files-2.1\1ff4bcb3167a74d75651e794e1872ecc\media-1.1.0\AndroidManifest.xml:20:5-22:41
