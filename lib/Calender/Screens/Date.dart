@@ -183,7 +183,7 @@ class _CalenderDateState extends State<CalenderDate> {
                   ),
                   child: Row(
                     children: [
-                      Text(remainderTime == null
+                      Text(remainderDateTime == null
                           ? "Remainder not Set yet!!"
                           : remainderTime.minute.toString().length == 1
                               ? "Picked Time ${remainderTime.hour}: 0${remainderTime.minute}"

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:myapp/Calender/Provider/Events_provider.dart';
 import 'package:myapp/Calender/calender.dart';
@@ -13,7 +11,7 @@ void main() async {
   var difference = DateTime.now().second;
   runApp(MyApp());
   AndroidAlarmManager.initialize();
-  AndroidAlarmManager.periodic(
+  await AndroidAlarmManager.periodic(
     Duration(minutes: 1),
     0,
     showNotification,
@@ -30,7 +28,7 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (_) => EventsProvider(),
       child: MaterialApp(
-        title: "Practice App",
+        title: "Flutter Demo",
         theme: ThemeData(
           primarySwatch: Colors.red,
           accentColor: Colors.amber,

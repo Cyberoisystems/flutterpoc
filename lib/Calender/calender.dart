@@ -149,61 +149,53 @@ class CalenderState extends State<Calender> with TickerProviderStateMixin {
                       mediaquery.padding.top) *
                   0.5,
               child: CalenderDate(eventHandler)),
-          Expanded(
-            child: Container(
-              height: (mediaquery.size.height -
-                      appBar.preferredSize.height -
-                      mediaquery.padding.top) *
-                  0.5,
-              child: ListView.builder(
-                itemBuilder: (ctx, index) {
-                  return Card(
-                    elevation: 7,
-                    margin: EdgeInsets.symmetric(
-                      vertical: 5,
-                      horizontal: 5,
-                    ),
-                    child: ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: Colors.purple,
-                          radius: 20,
-                          child: Text(
-                            DateFormat.d().format(
-                              listOfEvents[index].date,
-                            ),
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20),
-                          ),
+          ListView.builder(
+            itemBuilder: (ctx, index) {
+              return Card(
+                elevation: 7,
+                margin: EdgeInsets.symmetric(
+                  vertical: 5,
+                  horizontal: 5,
+                ),
+                child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: Colors.purple,
+                      radius: 20,
+                      child: Text(
+                        DateFormat.d().format(
+                          listOfEvents[index].date,
                         ),
-                        title: Text(
-                          listOfEvents[index].title,
-                          style: TextStyle(
-                            fontSize: 20,
+                        style: TextStyle(
+                            color: Colors.white,
                             fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        subtitle: Text(
-                          listOfEvents[index].eventType,
-                          style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey),
-                        ),
-                        trailing: IconButton(
-                          icon: Icon(
-                            Icons.delete,
-                            color: Colors.red,
-                            size: 30,
-                          ),
-                          onPressed: () => deleteEvent(listOfEvents[index].id),
-                        )),
-                  );
-                },
-                itemCount: listOfEvents.length,
-              ),
-            ),
+                            fontSize: 20),
+                      ),
+                    ),
+                    title: Text(
+                      listOfEvents[index].title,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    subtitle: Text(
+                      listOfEvents[index].eventType,
+                      style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey),
+                    ),
+                    trailing: IconButton(
+                      icon: Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                        size: 30,
+                      ),
+                      onPressed: () => deleteEvent(listOfEvents[index].id),
+                    )),
+              );
+            },
+            itemCount: listOfEvents.length,
           ),
         ],
         controller: tb,
